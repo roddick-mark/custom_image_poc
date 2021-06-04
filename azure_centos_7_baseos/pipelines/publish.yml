@@ -1,0 +1,71 @@
+resources:
+  repositories:
+    - repository: images
+      type: git
+      name: 'Maersk VM Image Factory/engineering-vm-images'
+    - repository: pipeline-templates
+      type: git
+      name: 'Maersk VM Image Factory/pipeline-templates'
+    - repository: ansible-roles
+      type: git
+      name: 'Maersk VM Image Factory/ansible-roles'
+    - repository: core-tests
+      type: git
+      name: 'Maersk VM Image Factory/core-tests'
+    - repository: policy-as-code
+      type: git
+      name: 'Maersk VM Image Factory/policy-as-code'
+
+variables:
+  - group: common-variables
+  - group: publish-variables
+  - name: image-name
+    value: azure_centos_7_baseos
+  - name: image-publisher
+    value: Maersk
+  - name: image-offer
+    value: Centos-7.7
+  - name: image-sku
+    value: baseOSCI
+  - name: image-os-type
+    value: linux
+  - name: target-regions
+    value: "westeurope eastus2 eastasia northeurope"
+  - name: replica-count
+    value: 1
+  - name: image-major-version
+    value: 0
+
+schedules:
+- cron: "0 1 16 * *"
+  displayName: Monthly build
+  branches:
+    include:
+    - master
+  always: true
+  
+trigger: none
+
+jobs:
+- template: /images/azure/publish.yml@pipeline-templates
+  parameters:
+    armServiceConnection: $(publish-arm-service-connection)
+    armSubscriptionID: $(publish-arm-subscription-id)
+    packerBuildResourceGroup: $(build-resource-group)
+    imageName: $(image-name)
+    imagePublisher: $(image-publisher)
+    imageOffer: $(image-offer)
+    imageSku: $(image-sku)
+    imageOsType: $(image-os-type)
+    targetRegions: $(target-regions)
+    replicaCount: $(replica-count)
+    imageMajorVersion: $(image-major-version)
+    softwareBinariesStorageAccountSas: '$(software-binaries-storage-account-sas)'
+    galleryResourceGroup: $(publish-image-gallery-resource-group)
+    galleryName: $(publish-image-gallery-name)
+    adoPAT: '$(ado-pat)'   
+    crowdstrikeUser: '$(crowdstrike-api-user)'
+    crowdstrikePass: '$(crowdstrike-api-password)' 
+    qualysUser: '$(qualys-api-user)'
+    qualysPass: '$(qualys-api-password)'
+    trendAPIKey: '$(trend-api-key)'

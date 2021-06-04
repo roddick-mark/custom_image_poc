@@ -1,0 +1,54 @@
+{
+    "variables": {
+      "armClientID": "",
+      "armClientSecret": "",
+      "armTenantID": "",
+      "armSubscriptionID": "",
+      "packerBuildResourceGroup": "",
+      "imageName": "",
+      "buildID": "",
+      "codeSourceDir": "",
+      "buildPublish": "",
+      "softwareBinariesStorageAccountName": "",
+      "softwareBinariesStorageAccountSas": ""  
+    },
+    "builders": [{
+      "type": "azure-arm",
+
+      "client_id": "{{user `armClientID`}}",
+      "client_secret": "{{user `armClientSecret`}}",
+      "tenant_id": "{{user `armTenantID`}}",
+      "subscription_id": "{{user `armSubscriptionID`}}",
+
+      "build_resource_group_name": "{{user `packerBuildResourceGroup`}}",  
+      "managed_image_resource_group_name": "{{user `packerBuildResourceGroup`}}",
+      "managed_image_name": "{{user `imageName`}}_{{user `buildID`}}_{{user `buildPublish`}}", 
+  
+      "os_type": "Linux",
+      "image_publisher": "OpenLogic",
+      "image_offer": "CentOS-LVM",
+      "image_sku": "7-LVM",
+      "image_version": "latest",
+  
+      "vm_size": "Standard_DS4_v2",
+
+      "managed_image_storage_account_type": "Premium_LRS",
+      "os_disk_size_gb": "64"
+    }],
+    "provisioners": [
+        {
+            "playbook_file": "{{user `codeSourceDir`}}/images/{{user `imageName`}}/ansible_playbooks/playbook.yml",
+            "type": "ansible",
+            "extra_arguments": ["--extra-vars", "software_binaries_storage_account_name={{user `softwareBinariesStorageAccountName`}} software_binaries_storage_account_sas={{user `softwareBinariesStorageAccountSas`}}" ]
+        },
+        {
+            "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+            "inline": [
+                "df -ah",
+                "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+            ],
+            "inline_shebang": "/bin/sh -x",
+            "type": "shell"
+        }
+    ]
+}

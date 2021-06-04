@@ -1,0 +1,37 @@
+resources:
+  repositories:
+    - repository: images
+      type: git
+      name: 'Maersk VM Image Factory/engineering-vm-images'
+    - repository: pipeline-templates
+      type: git
+      name: 'Maersk VM Image Factory/pipeline-templates'
+    - repository: ansible-roles
+      type: git
+      name: 'Maersk VM Image Factory/ansible-roles'
+    - repository: core-tests
+      type: git
+      name: 'Maersk VM Image Factory/core-tests'
+    - repository: policy-as-code
+      type: git
+      name: 'Maersk VM Image Factory/policy-as-code'
+
+variables:
+  - group: common-variables
+  - group: build-variables
+  - name: image-name
+    value: azure_centos_7_baseos
+  - name: image-os-type
+    value: linux
+
+trigger: none
+
+jobs:
+- template: /images/azure/build.yml@pipeline-templates
+  parameters:
+    armServiceConnection: $(build-arm-service-connection)
+    armSubscriptionID: $(build-arm-subscription-id)
+    packerBuildResourceGroup: $(build-resource-group)
+    imageName: $(image-name)
+    imageOsType: $(image-os-type)
+    softwareBinariesStorageAccountSas: '$(software-binaries-storage-account-sas)'
