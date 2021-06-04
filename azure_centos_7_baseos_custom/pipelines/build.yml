@@ -20,7 +20,7 @@ variables:
   - group: common-variables
   - group: build-variables
   - name: image-name
-    value: azure_centos_7_baseos
+    value: azure_centos_7_baseos_custom
   - name: image-os-type
     value: linux
 
