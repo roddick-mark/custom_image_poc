@@ -36,6 +36,14 @@
       "os_disk_size_gb": "64"
     }],
     "provisioners": [
+      {
+        "type": "shell",
+        "script": "{{user `codeSourceDir`}}/images/{{user `imageName`}}/bash/custom.sh",
+        "environment_vars": [
+          "spn_client_id={{user `armClientID`}}",
+          "spn_client_secret={{user `armClientSecret`}}"
+          ]
+      },
         {
             "playbook_file": "{{user `codeSourceDir`}}/images/{{user `imageName`}}/ansible_playbooks/playbook.yml",
             "type": "ansible",
