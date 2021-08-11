@@ -41,7 +41,8 @@
         "script": "{{user `codeSourceDir`}}/images/{{user `imageName`}}/scripts/custom.sh",
         "environment_vars": [
           "spn_client_id={{user `armClientID`}}",
-          "spn_client_secret={{user `armClientSecret`}}"
+          "spn_client_secret={{user `armClientSecret`}}",
+          "spn_tenant_id={{user `armTenantID`}}"
           ]
       },
         {
