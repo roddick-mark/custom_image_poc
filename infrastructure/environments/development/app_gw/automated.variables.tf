@@ -1,0 +1,12 @@
+variable "ssl_certificate_data" {}
+variable "ssl_certificate_password" {}
+variable "subnet_id" {}
+variable "frontend_ports" {}
+variable "backend_address_pools" {}
+variable "backend_http_settings" {}
+variable "https_listeners" {}
+variable "request_routing_rules" {}
+variable "appgw_name" {}
+variable "pip_name" {}
+variable "pip_allocation_method" {}
+variable "resource_group_name" {}
